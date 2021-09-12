@@ -23,38 +23,48 @@
         </form>
     @endif
 
-    @foreach ($project->tasks as $task)
+    @foreach ($project->tasks()->orderBy('id', 'desc')->get(); as $task)
         <table class="table table-bordered">
             <tr>
                 <td colspan="4">{{$task->content}}</td>
                 <td>
                     @if (Auth::check())
-                        <button type="button" class="btn btn-sm btn-success">Iniciar Tarefa</button>
+                        <a href="/start/{{$task->id}}" type="button" class="btn btn-sm btn-success">Iniciar</a>
                     @endif
-                    <button type="button" class="btn btn-sm btn-success">Encerrar</button>
+                    <a href="#" type="button" class="btn btn-sm btn-success">Encerrar</a>
                 </td>
             </tr>
             <tr>
                 <th>Início</th>
                 <th>Fim</th>
                 <th>Status</th>
-                <th>R$ {{$task->value}}</th>
+                <th>Valor R$ {{$task->value}}/hr</th>
                 @if (Auth::check())
                     <th>Ação</th>
                 @endif
             </tr>
-            <tr>
-                <td>Mark</td>
-                <td>--:--:--</td>
-                <td>Trabalhando há 02:50:13</td>
-                <td>0.50</td>
-                @if (Auth::check())
-                    <td>
-                        <button type="button" class="btn btn-sm btn-warning">pausar</button>
-                        <button type="button" class="btn btn-sm btn-danger">x</button>
-                    </td>
-                @endif
-            </tr>
+            @foreach ($task->schedules as $schedule)
+                <tr>
+                    <td>{{\Carbon\Carbon::parse($schedule->start)->format('d/m/Y H:i:s')}}</td>
+                    @if ($schedule->end)
+                        <td>{{\Carbon\Carbon::parse($schedule->end)->format('d/m/Y H:i:s')}}</td>
+                        <td>Finalizado</td>
+                        <td>{{Money::formatReal(\Carbon\Carbon::parse($schedule->start)->diffInSeconds(\Carbon\Carbon::parse($schedule->end)) * (($task->value/60)/60))}}</td>
+                    @else
+                        <td>--:--:--</td>
+                        <td>Trabalhando há {{$schedule->start}}</td>
+                        <td>{{Money::formatReal(\Carbon\Carbon::parse(\Carbon\Carbon::now())->diffInSeconds($schedule->start) * (($task->value/60)/60))}}</td>
+                    @endif
+                    @if (Auth::check())
+                        <td>
+                            @if (!$schedule->end)
+                                <a href="/end/{{$schedule->id}}" type="button" class="btn btn-sm btn-warning">terminar</a>
+                            @endif
+                            <button type="button" class="btn btn-sm btn-danger">x</button>
+                        </td>
+                    @endif
+                </tr>
+            @endforeach
         </table>
     @endforeach
 @endsection

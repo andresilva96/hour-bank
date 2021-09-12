@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Project;
+use App\Models\Schedule;
 use App\Models\Task;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class HourBankController extends Controller
@@ -20,5 +22,19 @@ class HourBankController extends Controller
             return redirect()->back();
         }
         return view('hour-bank', ['project' => $project]);
+    }
+
+    public function startTask($id)
+    {
+        Task::find($id)->schedules()->create(['start' => Carbon::now()]);
+        return redirect()->back();
+    }
+
+    public function endSchedule($id)
+    {
+        $schedule = Schedule::find($id);
+        $schedule->end = Carbon::now();
+        $schedule->save();
+        return redirect()->back();
     }
 }
