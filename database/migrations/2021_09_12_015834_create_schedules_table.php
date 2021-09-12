@@ -20,6 +20,7 @@ class CreateSchedulesTable extends Migration
             $table->unsignedBigInteger('task_id');
             $table->foreign('task_id')->references('id')->on('tasks');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

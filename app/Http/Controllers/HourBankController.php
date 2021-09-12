@@ -37,4 +37,10 @@ class HourBankController extends Controller
         $schedule->save();
         return redirect()->back();
     }
+
+    public function deleteSchedule($id)
+    {
+        Schedule::find($id)->delete();
+        return redirect()->back();
+    }
 }

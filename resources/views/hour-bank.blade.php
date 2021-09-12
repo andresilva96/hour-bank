@@ -60,7 +60,7 @@
                             @if (!$schedule->end)
                                 <a href="/end/{{$schedule->id}}" type="button" class="btn btn-sm btn-warning">terminar</a>
                             @endif
-                            <button type="button" class="btn btn-sm btn-danger">x</button>
+                            <a href="/delete-schedule/{{$schedule->id}}" class="btn btn-sm btn-danger">x</a>
                         </td>
                     @endif
                 </tr>
