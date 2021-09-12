@@ -15,7 +15,7 @@
         <ul class="list-group">
             <li class="list-group-item">
                 <span>{{$project->hash}}</span>
-                <a href="#">{{$project->name}}</a>
+                <a href="/hour-bank/{{$project->hash}}">{{$project->name}}</a>
             </li>
         </ul>
     @endforeach
