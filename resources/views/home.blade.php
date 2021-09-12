@@ -1,23 +1,22 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">{{ __('Dashboard') }}</div>
-
-                <div class="card-body">
-                    @if (session('status'))
-                        <div class="alert alert-success" role="alert">
-                            {{ session('status') }}
-                        </div>
-                    @endif
-
-                    {{ __('You are logged in!') }}
-                </div>
-            </div>
+    <form class="row g-3" action="{{route('home')}}" method="POST">
+        @csrf
+        <div class="col-11">
+            <input type="text" class="form-control" name="name" placeholder="Nome do Projeto">
         </div>
-    </div>
-</div>
+        <div class="col-1">
+            <button type="submit" class="btn btn-primary mb-3">Criar</button>
+        </div>
+    </form>
+
+    @foreach ($projects as $project)
+        <ul class="list-group">
+            <li class="list-group-item">
+                <span>{{$project->hash}}</span>
+                <a href="#">{{$project->name}}</a>
+            </li>
+        </ul>
+    @endforeach
 @endsection
