@@ -22,6 +22,7 @@ Route::get('/', function () {
 Route::group(['middleware' => ['auth']], function () {
     Route::get('/home', 'HomeController@index')->name('home');
     Route::post('/home', 'HomeController@index');
-    Route::get('/hour-bank/{hash}', 'HourBankController@index');
     Route::post('/hour-bank/{hash}', 'HourBankController@index');
 });
+
+Route::get('/hour-bank/{hash}', 'HourBankController@index');

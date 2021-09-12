@@ -20,4 +20,9 @@ class Project extends Model
             $model->attributes['hash'] = Str::random(7);
         });
     }
+
+    public function tasks()
+    {
+        return $this->hasMany(Task::class);
+    }
 }

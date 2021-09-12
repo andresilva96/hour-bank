@@ -10,4 +10,9 @@ class Task extends Model
     use HasFactory;
 
     protected $fillable = ['name', 'value'];
+
+    public function schedules()
+    {
+        return $this->hasMany(Schedule::class);
+    }
 }

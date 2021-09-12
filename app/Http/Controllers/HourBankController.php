@@ -11,7 +11,6 @@ class HourBankController extends Controller
     public function index(Request $request, $hash)
     {
         if ($data = $request->all()) {
-            $tasks = [];
             foreach ($data['tasks'] as $task) {
                 Task::create(['name' => $task, 'value' => $data['value']]);
             }
