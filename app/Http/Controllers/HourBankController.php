@@ -10,13 +10,15 @@ class HourBankController extends Controller
 {
     public function index(Request $request, $hash)
     {
+        $project = Project::where('hash', $hash)->first();
+
         if ($data = $request->all()) {
             foreach ($data['tasks'] as $task) {
-                Task::create(['name' => $task, 'value' => $data['value']]);
+                $task = new Task(['content' => $task, 'value' => $data['value']]);
+                $project->tasks()->save($task);
             }
             return redirect()->back();
         }
-        $project = Project::where('hash', $hash)->first();
         return view('hour-bank', ['project' => $project]);
     }
 }
