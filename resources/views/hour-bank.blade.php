@@ -26,34 +26,38 @@
     @foreach ($project->tasks()->orderBy('id', 'desc')->get(); as $task)
         <table class="table table-bordered">
             <tr>
-                <td colspan="4">{{$task->content}}</td>
-                <td>
-                    @if (Auth::check())
-                        <a href="/start/{{$task->id}}" type="button" class="btn btn-sm btn-success">Iniciar</a>
-                    @endif
-                    <a href="#" type="button" class="btn btn-sm btn-success">Encerrar</a>
-                </td>
+                <td colspan="5">{{$task->content}}</td>
             </tr>
             <tr>
                 <th>Início</th>
                 <th>Fim</th>
-                <th>Status</th>
                 <th>Valor R$ {{$task->value}}/hr</th>
+                <th>Status</th>
                 @if (Auth::check())
-                    <th>Ação</th>
+                    <th>
+                        Ação
+                        <a href="/start/{{$task->id}}" type="button" class="btn btn-sm btn-success">Iniciar</a>
+                        <a href="#" type="button" class="btn btn-sm btn-success">Encerrar</a>
+                    </th>
                 @endif
             </tr>
-            @foreach ($task->schedules as $schedule)
+
+            @php ($total = 0)
+            @foreach ($task->schedules as $i => $schedule)
+                @php ($val = $schedule->end
+                    ? \Carbon\Carbon::parse($schedule->start)->diffInSeconds(\Carbon\Carbon::parse($schedule->end)) * (($task->value/60)/60)
+                    : \Carbon\Carbon::parse(\Carbon\Carbon::now())->diffInSeconds($schedule->start) * (($task->value/60)/60))
+                @php ($total += $val)
                 <tr>
                     <td>{{\Carbon\Carbon::parse($schedule->start)->format('d/m/Y H:i:s')}}</td>
                     @if ($schedule->end)
                         <td>{{\Carbon\Carbon::parse($schedule->end)->format('d/m/Y H:i:s')}}</td>
+                        <td>{{Money::formatReal($val)}}</td>
                         <td>Finalizado</td>
-                        <td>{{Money::formatReal(\Carbon\Carbon::parse($schedule->start)->diffInSeconds(\Carbon\Carbon::parse($schedule->end)) * (($task->value/60)/60))}}</td>
                     @else
                         <td>--:--:--</td>
+                        <td>{{Money::formatReal($val)}}</td>
                         <td>Trabalhando há {{$schedule->start}}</td>
-                        <td>{{Money::formatReal(\Carbon\Carbon::parse(\Carbon\Carbon::now())->diffInSeconds($schedule->start) * (($task->value/60)/60))}}</td>
                     @endif
                     @if (Auth::check())
                         <td>
@@ -64,6 +68,12 @@
                         </td>
                     @endif
                 </tr>
+                @if (count($task->schedules) == $i+1)
+                    <tr>
+                        <td colspan="2"><b>Horas Trabalhadas:</b></td>
+                        <td><b>Total: {{Money::formatReal($total)}}</b></td>
+                    </tr>
+                @endif
             @endforeach
         </table>
     @endforeach
