@@ -42,8 +42,12 @@
                 @endif
             </tr>
 
+            @php ($sec = 0)
             @php ($total = 0)
             @foreach ($task->schedules as $i => $schedule)
+                @php ($sec += $schedule->end
+                    ? \Carbon\Carbon::parse($schedule->start)->diffInSeconds(\Carbon\Carbon::parse($schedule->end))
+                    : \Carbon\Carbon::parse(\Carbon\Carbon::now())->diffInSeconds($schedule->start))
                 @php ($val = $schedule->end
                     ? \Carbon\Carbon::parse($schedule->start)->diffInSeconds(\Carbon\Carbon::parse($schedule->end)) * (($task->value/60)/60)
                     : \Carbon\Carbon::parse(\Carbon\Carbon::now())->diffInSeconds($schedule->start) * (($task->value/60)/60))
@@ -70,7 +74,7 @@
                 </tr>
                 @if (count($task->schedules) == $i+1)
                     <tr>
-                        <td colspan="2"><b>Horas Trabalhadas:</b></td>
+                        <td colspan="2"><b>Horas Trabalhadas: {{gmdate("H:i:s", $sec)}}</b></td>
                         <td><b>Total: {{Money::formatReal($total)}}</b></td>
                     </tr>
                 @endif
