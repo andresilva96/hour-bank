@@ -22,7 +22,37 @@
             </div>
         </form>
     @endif
-
+    @php ($sec = 0)
+    @php ($total = 0)
+    <div class="mx-auto" style="width: 200px;">
+        <h5>Resumo</h5>
+    </div>
+    <table class="table table-bordered">
+        <tr>
+            <th>Total Trabalhado</th>
+            <th>Valor Total</th>
+        </tr>
+        @foreach ($project->tasks()->orderBy('id', 'desc')->get(); as $j => $task)
+            @foreach ($task->schedules as $i => $schedule)
+                @php ($sec += $schedule->end
+                    ? \Carbon\Carbon::parse($schedule->start)->diffInSeconds(\Carbon\Carbon::parse($schedule->end))
+                    : \Carbon\Carbon::parse(\Carbon\Carbon::now())->diffInSeconds($schedule->start))
+                @php ($val = $schedule->end
+                    ? \Carbon\Carbon::parse($schedule->start)->diffInSeconds(\Carbon\Carbon::parse($schedule->end)) * (($task->value/60)/60)
+                    : \Carbon\Carbon::parse(\Carbon\Carbon::now())->diffInSeconds($schedule->start) * (($task->value/60)/60))
+                @php ($total += $val)
+                @if ($j == $i+1)
+                    <tr>
+                        <td><b>{{gmdate("H:i:s", $sec)}}</b></td>
+                        <td><b>{{Money::formatReal($total)}}</b></td>
+                    </tr>
+                @endif
+            @endforeach
+        @endforeach
+    </table>
+    <div class="mx-auto" style="width: 200px;">
+        <h5>Detalhado</h5>
+    </div>
     @foreach ($project->tasks()->orderBy('id', 'desc')->get(); as $task)
         <table class="table table-bordered">
             <tr>
@@ -74,7 +104,7 @@
                 </tr>
                 @if (count($task->schedules) == $i+1)
                     <tr>
-                        <td colspan="2"><b>Horas Trabalhadas: {{gmdate("H:i:s", $sec)}}</b></td>
+                        <td colspan="2"><b>Tempo Trabalhado: {{gmdate("H:i:s", $sec)}}</b></td>
                         <td><b>Total: {{Money::formatReal($total)}}</b></td>
                     </tr>
                 @endif
