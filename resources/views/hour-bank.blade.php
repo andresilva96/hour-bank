@@ -23,6 +23,32 @@
         </form>
     @endif
 
+    <table class="table table-bordered">
+        <tr>
+            <th>Total Trabalhado</th>
+            <th>Valor Total</th>
+        </tr>
+        <tr>
+                @php ($sec = 0)
+                @php ($total = 0)
+                @foreach ($project->tasks()->orderBy('id', 'desc')->get() as $j => $task)
+                    @foreach ($task->schedules as $i => $schedule)
+                        @php ($sec += $schedule->end
+                            ? \Carbon\Carbon::parse($schedule->start)->diffInSeconds(\Carbon\Carbon::parse($schedule->end))
+                            : \Carbon\Carbon::parse(\Carbon\Carbon::now())->diffInSeconds($schedule->start))
+                        @php ($val = $schedule->end
+                            ? \Carbon\Carbon::parse($schedule->start)->diffInSeconds(\Carbon\Carbon::parse($schedule->end)) * (($task->value/60)/60)
+                            : \Carbon\Carbon::parse(\Carbon\Carbon::now())->diffInSeconds($schedule->start) * (($task->value/60)/60))
+                        @php ($total += $val)
+                        @if (count($project->tasks()->orderBy('id', 'desc')->get()) == $j+1)
+                            <td>{{gmdate("H:i:s", $sec)}}</td>
+                            <td>{{Money::formatReal($total)}}</td>
+                        @endif
+                    @endforeach
+                @endforeach
+        </tr>
+    </table>
+
     @foreach ($project->tasks()->orderBy('id', 'desc')->get(); as $task)
         <table class="table table-bordered">
             <tr>
