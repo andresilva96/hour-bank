@@ -8,7 +8,7 @@
         <form class="row mt-3" action="/{{ $project->hash }}" method="POST">
             @csrf
             <div class="col-12 mb-3">
-                <input type="number" class="form-control" name="value" placeholder="Valor da Tarefa" required>
+                <input type="number" class="form-control" name="value" value="60" placeholder="Valor da Tarefa" required>
             </div>
             <div id="task" class="col-11 mb-3">
                 <input type="text" class="form-control" name="tasks[]" placeholder="Conteúdo da Tarefa" required>
