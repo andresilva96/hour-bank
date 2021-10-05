@@ -71,7 +71,7 @@
             <tr>
                 <td colspan="5">{{$task->content}}</td>
             </tr>
-            <tr>
+            <tr @if (!Auth::check()) class="collapse f-{{$task->id}}" @endif>
                 <th>Início</th>
                 <th>Fim</th>
                 <th>Valor R$ {{$task->value}}/hr</th>
@@ -84,7 +84,6 @@
                     </th>
                 @endif
             </tr>
-
             @php ($sec = 0)
             @php ($total = 0)
             @foreach ($task->schedules as $i => $schedule)
@@ -95,7 +94,7 @@
                     ? \Carbon\Carbon::parse($schedule->start)->diffInSeconds(\Carbon\Carbon::parse($schedule->end)) * (($task->value/60)/60)
                     : \Carbon\Carbon::parse(\Carbon\Carbon::now())->diffInSeconds($schedule->start) * (($task->value/60)/60))
                 @php ($total += $val)
-                <tr>
+                <tr @if (!Auth::check()) class="collapse f-{{$task->id}}" @endif>
                     <td>{{\Carbon\Carbon::parse($schedule->start)->format('d/m/Y H:i:s')}}</td>
                     @if ($schedule->end)
                         <td>{{\Carbon\Carbon::parse($schedule->end)->format('d/m/Y H:i:s')}}</td>
@@ -117,7 +116,16 @@
                 </tr>
                 @if (count($task->schedules) == $i+1)
                     <tr>
-                        <td colspan="2"><b>Horas Trabalhadas: {{gmdate("H:i:s", $sec)}}</b></td>
+                        <td colspan="2">
+                            @if (!Auth::check())
+                            <button class="btn btn-sm btn-primary" type="button" data-toggle="collapse" data-target=".f-{{$task->id}}">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar2-plus-fill" viewBox="0 0 16 16">
+                                    <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM2 3.5v1c0 .276.244.5.545.5h10.91c.3 0 .545-.224.545-.5v-1c0-.276-.244-.5-.546-.5H2.545c-.3 0-.545.224-.545.5zm6.5 5a.5.5 0 0 0-1 0V10H6a.5.5 0 0 0 0 1h1.5v1.5a.5.5 0 0 0 1 0V11H10a.5.5 0 0 0 0-1H8.5V8.5z"/>
+                                </svg>
+                            </button>
+                            @endif
+                            <b>Horas Trabalhadas: {{gmdate("H:i:s", $sec)}}</b>
+                        </td>
                         <td><b>Total: {{Money::formatReal($total)}}</b></td>
                     </tr>
                 @endif
