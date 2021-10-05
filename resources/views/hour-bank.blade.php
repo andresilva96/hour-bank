@@ -75,7 +75,6 @@
                 <th>Início</th>
                 <th>Fim</th>
                 <th>Valor R$ {{$task->value}}/hr</th>
-                <th>Status</th>
                 @if (Auth::check())
                     <th>
                         Ação
@@ -99,11 +98,9 @@
                     @if ($schedule->end)
                         <td>{{\Carbon\Carbon::parse($schedule->end)->format('d/m/Y H:i:s')}}</td>
                         <td>{{Money::formatReal($val)}}</td>
-                        <td>Finalizado</td>
                     @else
                         <td>--:--:--</td>
                         <td>{{Money::formatReal($val)}}</td>
-                        <td>Trabalhando há {{$schedule->start}}</td>
                     @endif
                     @if (Auth::check())
                         <td>
