@@ -22,10 +22,10 @@ Route::get('/', function () {
 Route::group(['middleware' => ['auth']], function () {
     Route::get('/home', 'HomeController@index')->name('home');
     Route::post('/home', 'HomeController@index');
-    Route::post('/hour-bank/{hash}', 'HourBankController@index');
+    Route::post('/{hash}', 'HourBankController@index');
     Route::get('/start/{id}', 'HourBankController@startTask');
     Route::get('/end/{id}', 'HourBankController@endSchedule');
     Route::get('/delete-schedule/{id}', 'HourBankController@deleteSchedule');
 });
 
-Route::get('/hour-bank/{hash}', 'HourBankController@index');
+Route::get('/{hash}', 'HourBankController@index');

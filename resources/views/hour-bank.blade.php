@@ -5,7 +5,7 @@
         <h1>Banco de Horas - {{ $project->name }}</h1>
     </div>
     @if (Auth::check())
-        <form class="row mt-3" action="/hour-bank/{{ $project->hash }}" method="POST">
+        <form class="row mt-3" action="/{{ $project->hash }}" method="POST">
             @csrf
             <div class="col-12 mb-3">
                 <input type="number" class="form-control" name="value" placeholder="Valor da Tarefa" required>
@@ -22,6 +22,21 @@
             </div>
         </form>
     @endif
+
+    <hr>
+
+    <form class="row mt-3" action="/{{ $project->hash }}" method="POST">
+        @csrf
+        <div class="col-4 mb-3">
+            <input type="date" class="form-control" name="from">
+        </div>
+        <div class="col-4 mb-3">
+            <input type="date" class="form-control" name="to">
+        </div>
+        <div class="col-4 d-flex justify-content-end">
+            <button type="submit" class="btn btn-primary mb-3">Consultar</button>
+        </div>
+    </form>
 
     <table class="table table-bordered">
         <tr>
@@ -48,6 +63,8 @@
                 @endforeach
         </tr>
     </table>
+
+    <hr>
 
     @foreach ($project->tasks()->orderBy('id', 'desc')->get(); as $task)
         <table class="table table-bordered">
