@@ -85,7 +85,7 @@
             </tr>
             @php ($sec = 0)
             @php ($total = 0)
-            @foreach ($task->schedules as $i => $schedule)
+            @foreach ($task->schedules()->orderBy('id', 'desc')->get() as $i => $schedule)
                 @php ($sec += $schedule->end
                     ? \Carbon\Carbon::parse($schedule->start)->diffInSeconds(\Carbon\Carbon::parse($schedule->end))
                     : \Carbon\Carbon::parse(\Carbon\Carbon::now())->diffInSeconds($schedule->start))
