@@ -59,7 +59,7 @@
                         @php ($total += $val)
                     @endforeach
                     @if (count($tasks) == $j+1)
-                        <td>{{gmdate("d/m/Y H:i:s", $sec)}} {{$total}}</td>
+                        <td>{{ \App\Helpers\Helper::getFullHour($sec) }}</td>
                         <td>{{Money::formatReal($total)}}</td>
                     @endif
                 @endforeach
